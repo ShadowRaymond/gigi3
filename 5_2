@@ -1,0 +1,62 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+LIBS = -lm
+
+SRC_DIR = .
+LIBS_DIR = ../data_libs
+PROCESS_DIR = ../data_module
+DECISION_DIR = ../yet_another_decision_module
+BUILD_DIR = ../../build
+
+TARGET = $(BUILD_DIR)/Quest_3
+TARGET_STATIC = $(BUILD_DIR)/Quest_4
+TARGET_DYNAMIC = $(BUILD_DIR)/Quest_5
+
+STATIC_LIB = data_stat.a
+DYNAMIC_LIB = $(BUILD_DIR)/data_process.so
+
+SRCS = $(SRC_DIR)/main_executable_module.c \
+       $(LIBS_DIR)/data_io.c \
+       $(LIBS_DIR)/data_stat.c \
+       $(PROCESS_DIR)/data_process.c \
+       $(DECISION_DIR)/decision.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Квест 4: Статическая библиотека
+data_stat.a: $(LIBS_DIR)/data_stat.o
+	ar rcs $(STATIC_LIB) $(LIBS_DIR)/data_stat.o
+
+build_with_static: $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(PROCESS_DIR)/data_process.o $(DECISION_DIR)/decision.o data_stat.a
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(PROCESS_DIR)/data_process.o $(DECISION_DIR)/decision.o $(STATIC_LIB) -o $(TARGET_STATIC) $(LIBS)
+
+# Квест 5: Динамическая библиотека (компилируем зависимые файлы с -fPIC)
+data_process.so: $(PROCESS_DIR)/data_process.c $(LIBS_DIR)/data_stat.c
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -fPIC -c $(PROCESS_DIR)/data_process.c -o $(PROCESS_DIR)/data_process.o
+	$(CC) $(CFLAGS) -fPIC -c $(LIBS_DIR)/data_stat.c -o $(LIBS_DIR)/data_stat.o
+	$(CC) -shared $(PROCESS_DIR)/data_process.o $(LIBS_DIR)/data_stat.o -o $(DYNAMIC_LIB)
+
+# Сборка проекта с динамической библиотекой и макросом -DDYNAMIC
+build_with_dynamic: data_process.so $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(DECISION_DIR)/decision.o $(LIBS_DIR)/data_stat.o
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c -DDYNAMIC $(SRC_DIR)/main_executable_module.c -o $(SRC_DIR)/main_executable_module.o
+	$(CC) $(CFLAGS) $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(DECISION_DIR)/decision.o $(LIBS_DIR)/data_stat.o -L$(BUILD_DIR) -ldata_process -Wl,-rpath,$(BUILD_DIR) -o $(TARGET_DYNAMIC) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET) $(TARGET_STATIC) $(TARGET_DYNAMIC) $(STATIC_LIB) $(DYNAMIC_LIB)
+	rm -f $(PROCESS_DIR)/*.o $(LIBS_DIR)/*.o $(SRC_DIR)/*.o $(DECISION_DIR)/*.o
+
+rebuild: clean all
+
+.PHONY: all clean rebuild build_with_static build_with_dynamic
