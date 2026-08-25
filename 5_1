@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "../data_libs/data_io.h"
+#include "../data_libs/data_stat.h"
+#include "../yet_another_decision_module/decision.h"
+
+#ifdef DYNAMIC
+// При использовании динамической библиотеки заголовок можно подключать так же
+#include "../data_module/data_process.h"
+#else
+#include "../data_module/data_process.h"
+#endif
+
+void sort(double *data, int n);
+
+int main()
+{
+    double *data = NULL;
+    int n = 0;
+
+    if (input(&data, &n) != 0 || n <= 0)
+    {
+        printf("n/a");
+        if (data != NULL)
+        {
+            free(data);
+        }
+        return 0;
+    }
+
+    printf("LOAD DATA...\n");
+
+    printf("RAW DATA:\n\t");
+    output(data, n);
+
+    printf("\nNORMALIZED DATA:\n\t");
+#ifdef DYNAMIC
+    // Логика под макросом динамической сборки
+    if (normalization(data, n))
+    {
+        output(data, n);
+    }
+    else
+    {
+        printf("ERROR");
+    }
+#else
+    // Обычная логика
+    if (normalization(data, n))
+    {
+        output(data, n);
+    }
+    else
+    {
+        printf("ERROR");
+    }
+#endif
+
+    printf("\nSORTED NORMALIZED DATA:\n\t");
+    sort(data, n);
+    output(data, n);
+
+    printf("\nFINAL DECISION:\n\t");
+    if (make_decision(data, n))
+    {
+        printf("YES");
+    }
+    else
+    {
+        printf("NO");
+    }
+
+    free(data);
+    return 0;
+}
+
+void sort(double *data, int n)
+{
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - 1 - i; j++)
+        {
+            if (*(data + j) > *(data + j + 1))
+            {
+                double temp = *(data + j);
+                *(data + j) = *(data + j + 1);
+                *(data + j + 1) = temp;
+            }
+        }
+    }
+}
