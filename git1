@@ -1,1 +1,1 @@
-gcc -Wall -Werror -Wextra src/data_module/data_module_entry.c src/data_libs/data_io.c src/data_libs/data_stat.c src/data_module/data_process.c -o build/Quest_1
+gcc -Wall -Werror -Wextra data_module/data_module_entry.c data_libs/data_io.c data_libs/data_stat.c data_module/data_process.c -o Quest_1
