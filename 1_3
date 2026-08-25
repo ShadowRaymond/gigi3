@@ -1,0 +1,26 @@
+#include "data_process.h"
+#include "../data_libs/data_stat.h"
+#include <stddef.h>
+
+int normalization(double *data, int n) 
+{
+    if (data == NULL || n <= 0) 
+    {
+        return 0;
+    }
+    
+    double min_val = min(data, n);
+    double max_val = max(data, n);
+    
+    if (max_val - min_val == 0) 
+    {
+        return 0;
+    }
+    
+    for (int i = 0; i < n; i++) 
+    {
+        *(data + i) = (*(data + i) - min_val) / (max_val - min_val);
+    }
+    
+    return 1;
+}
