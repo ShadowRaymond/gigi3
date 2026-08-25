@@ -1,0 +1,39 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+LIBS = -lm
+
+# Пути к файлам относительно папки, где лежит Makefile
+SRC_DIR = .
+LIBS_DIR = ../data_libs
+PROCESS_DIR = ../data_module
+DECISION_DIR = ../yet_another_decision_module
+BUILD_DIR = ../../build
+
+TARGET = $(BUILD_DIR)/Quest_3
+
+# Список всех исходных файлов .c
+SRCS = $(SRC_DIR)/main_executable_module.c \
+       $(LIBS_DIR)/data_io.c \
+       $(LIBS_DIR)/data_stat.c \
+       $(PROCESS_DIR)/data_process.c \
+       $(DECISION_DIR)/decision.c
+
+# Превращаем список .c в список объектов .o
+OBJS = $(SRCS:.c=.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+
+# Правило для компиляции каждого .c файла в .o
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+rebuild: clean all
+
+.PHONY: all clean rebuild
