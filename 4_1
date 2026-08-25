@@ -1,0 +1,46 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+LIBS = -lm
+
+SRC_DIR = .
+LIBS_DIR = ../data_libs
+PROCESS_DIR = ../data_module
+DECISION_DIR = ../yet_another_decision_module
+BUILD_DIR = ../../build
+
+TARGET = $(BUILD_DIR)/Quest_3
+TARGET_STATIC = $(BUILD_DIR)/Quest_4
+STATIC_LIB = data_stat.a
+
+SRCS = $(SRC_DIR)/main_executable_module.c \
+       $(LIBS_DIR)/data_io.c \
+       $(LIBS_DIR)/data_stat.c \
+       $(PROCESS_DIR)/data_process.c \
+       $(DECISION_DIR)/decision.c
+
+OBJS = $(SRCS:.c=.o)
+
+all: $(TARGET)
+
+$(TARGET): $(OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) $(LIBS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Цель для сборки статической библиотеки data_stat.a
+data_stat.a: $(LIBS_DIR)/data_stat.o
+	ar rcs $(STATIC_LIB) $(LIBS_DIR)/data_stat.o
+
+# Цель для сборки проекта с использованием статической библиотеки
+build_with_static: $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(PROCESS_DIR)/data_process.o $(DECISION_DIR)/decision.o data_stat.a
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(SRC_DIR)/main_executable_module.o $(LIBS_DIR)/data_io.o $(PROCESS_DIR)/data_process.o $(DECISION_DIR)/decision.o $(STATIC_LIB) -o $(TARGET_STATIC) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(TARGET) $(TARGET_STATIC) $(STATIC_LIB)
+
+rebuild: clean all
+
+.PHONY: all clean rebuild build_with_static
