@@ -1,0 +1,23 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+BUILD_DIR = ../../build
+TARGET = $(BUILD_DIR)/Quest_6
+
+SRCS = s21_string.c s21_string_test.c
+OBJS = $(SRCS:.c=.o)
+
+all: strlen_tests
+
+strlen_tests: $(OBJS)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+rebuild: clean strlen_tests
+
+.PHONY: all strlen_tests clean rebuild
