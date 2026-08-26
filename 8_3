@@ -1,0 +1,28 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+BUILD_DIR = ../../build
+
+TARGET_6 = $(BUILD_DIR)/Quest_6
+TARGET_7 = $(BUILD_DIR)/Quest_7
+TARGET_8 = $(BUILD_DIR)/Quest_8
+
+all: strlen_tests strcmp_tests strcpy
+
+strlen_tests:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DSTRLEN_MODE s21_string.c s21_string_test.c -o $(TARGET_6)
+
+strcmp_tests:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DSTRCMP_MODE s21_string.c s21_string_test.c -o $(TARGET_7)
+
+strcpy:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DBUILD_STRCPY s21_string.c -o $(TARGET_8)
+
+clean:
+	rm -f *.o $(TARGET_6) $(TARGET_7) $(TARGET_8)
+
+rebuild: clean all
+
+.PHONY: all strlen_tests strcmp_tests strcpy clean rebuild
