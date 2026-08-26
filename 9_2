@@ -1,0 +1,69 @@
+#include "s21_string.h"
+
+size_t s21_strlen(const char *str)
+{
+    size_t length = 0;
+    if (str != NULL)
+    {
+        while (*(str + length) != '\0')
+        {
+            length++;
+        }
+    }
+    return length;
+}
+
+int s21_strcmp(const char *str1, const char *str2)
+{
+    while (*str1 && (*str1 == *str2))
+    {
+        str1++;
+        str2++;
+    }
+    return *(const unsigned char *)str1 - *(const unsigned char *)str2;
+}
+
+char *s21_strcpy(char *dest, const char *src)
+{
+    if (dest == NULL || src == NULL)
+    {
+        return dest;
+    }
+    char *ptr = dest;
+    while (*src != '\0')
+    {
+        *ptr = *src;
+        ptr++;
+        src++;
+    }
+    *ptr = '\0';
+    return dest;
+}
+
+char *s21_strcat(char *dest, const char *src)
+{
+    if (dest == NULL || src == NULL)
+    {
+        return dest;
+    }
+    char *ptr = dest;
+    while (*ptr != '\0')
+    {
+        ptr++;
+    }
+    while (*src != '\0')
+    {
+        *ptr = *src;
+        ptr++;
+        src++;
+    }
+    *ptr = '\0';
+    return dest;
+}
+
+#if defined(BUILD_STRCPY) || defined(BUILD_STRCAT)
+int main()
+{
+    return 0;
+}
+#endif
