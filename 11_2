@@ -1,0 +1,119 @@
+#include "s21_string.h"
+
+size_t s21_strlen(const char *str)
+{
+    size_t length = 0;
+    if (str != NULL)
+    {
+        while (*(str + length) != '\0')
+        {
+            length++;
+        }
+    }
+    return length;
+}
+
+int s21_strcmp(const char *str1, const char *str2)
+{
+    while (*str1 && (*str1 == *str2))
+    {
+        str1++;
+        str2++;
+    }
+    return *(const unsigned char *)str1 - *(const unsigned char *)str2;
+}
+
+char *s21_strcpy(char *dest, const char *src)
+{
+    if (dest == NULL || src == NULL)
+    {
+        return dest;
+    }
+    char *ptr = dest;
+    while (*src != '\0')
+    {
+        *ptr = *src;
+        ptr++;
+        src++;
+    }
+    *ptr = '\0';
+    return dest;
+}
+
+char *s21_strcat(char *dest, const char *src)
+{
+    if (dest == NULL || src == NULL)
+    {
+        return dest;
+    }
+    char *ptr = dest;
+    while (*ptr != '\0')
+    {
+        ptr++;
+    }
+    while (*src != '\0')
+    {
+        *ptr = *src;
+        ptr++;
+        src++;
+    }
+    *ptr = '\0';
+    return dest;
+}
+
+char *s21_strchr(const char *str, int ch)
+{
+    if (str == NULL)
+    {
+        return NULL;
+    }
+    char c = (char)ch;
+    while (*str != '\0')
+    {
+        if (*str == c)
+        {
+            return (char *)str;
+        }
+        str++;
+    }
+    if (c == '\0')
+    {
+        return (char *)str;
+    }
+    return NULL;
+}
+
+char *s21_strstr(const char *haystack, const char *needle)
+{
+    if (haystack == NULL || needle == NULL)
+    {
+        return NULL;
+    }
+    if (*needle == '\0')
+    {
+        return (char *)haystack;
+    }
+    while (*haystack != '\0')
+    {
+        const char *h = haystack;
+        const char *n = needle;
+        while (*h != '\0' && *n != '\0' && *h == *n)
+        {
+            h++;
+            n++;
+        }
+        if (*n == '\0')
+        {
+            return (char *)haystack;
+        }
+        haystack++;
+    }
+    return NULL;
+}
+
+#if defined(BUILD_STRCPY) || defined(BUILD_STRCAT) || defined(BUILD_STRCHR) || defined(BUILD_STRSTR)
+int main()
+{
+    return 0;
+}
+#endif
