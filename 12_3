@@ -1,0 +1,147 @@
+#include "s21_string.h"
+#include <stdio.h>
+
+void s21_strlen_test(const char *test_input, size_t expected_output);
+void s21_strcmp_test(const char *str1, const char *str2, int expected_sign);
+void s21_strcpy_test(const char *src, const char *expected);
+void s21_strcat_test(const char *initial, const char *src, const char *expected);
+void s21_strchr_test(const char *str, int ch, int expected_offset, int is_null);
+void s21_strstr_test(const char *haystack, const char *needle, int expected_offset, int is_null);
+
+int main()
+{
+#if defined(STRLEN_MODE) || defined(FULL_COVERAGE)
+    printf("=== s21_strlen tests ===\n");
+    s21_strlen_test("Hello", 5);
+    s21_strlen_test("", 0);
+    s21_strlen_test("School 21\n!", 11);
+#endif
+
+#if defined(STRCMP_MODE) || defined(FULL_COVERAGE)
+    printf("=== s21_strcmp tests ===\n");
+    s21_strcmp_test("Hello", "Hello", 0);
+    s21_strcmp_test("Apple", "Banana", -1);
+    s21_strcmp_test("Banana", "Apple", 1);
+    s21_strcmp_test("", "Not Empty", -1);
+#endif
+
+#if defined(FULL_COVERAGE)
+    printf("=== s21_strcpy tests ===\n");
+    s21_strcpy_test("Hello World", "Hello World");
+    s21_strcpy_test("", "");
+    s21_strcpy_test("A\nB\tC", "A\nB\tC");
+
+    printf("=== s21_strcat tests ===\n");
+    s21_strcat_test("Hello", " World", "Hello World");
+    s21_strcat_test("", "Append", "Append");
+    s21_strcat_test("Base", "", "Base");
+
+    printf("=== s21_strchr tests ===\n");
+    s21_strchr_test("School 21", '2', 7, 0);
+    s21_strchr_test("School 21", '\0', 9, 0);
+    s21_strchr_test("School 21", 'z', -1, 1);
+
+    printf("=== s21_strstr tests ===\n");
+    s21_strstr_test("Find the needle", "needle", 9, 0);
+    s21_strstr_test("Everywhere", "", 0, 0);
+    s21_strstr_test("Lost in space", "ocean", -1, 1);
+#endif
+
+    return 0;
+}
+
+void s21_strlen_test(const char *test_input, size_t expected_output)
+{
+    size_t result = s21_strlen(test_input);
+    printf("INPUT: \"%s\"\n", test_input);
+    printf("EXPECTED: %zu, GOT: %zu\n", expected_output, result);
+    if (result == expected_output)
+        printf("SUCCESS\n\n");
+    else
+        printf("FAIL\n\n");
+}
+
+void s21_strcmp_test(const char *str1, const char *str2, int expected_sign)
+{
+    int result = s21_strcmp(str1, str2);
+    int actual_sign = (result > 0) - (result < 0);
+    int expected_sign_normalized = (expected_sign > 0) - (expected_sign < 0);
+
+    printf("INPUT: \"%s\" vs \"%s\"\n", str1, str2);
+    printf("EXPECTED SIGN: %d, GOT SIGN: %d (RAW: %d)\n", expected_sign_normalized, actual_sign, result);
+    if (actual_sign == expected_sign_normalized)
+        printf("SUCCESS\n\n");
+    else
+        printf("FAIL\n\n");
+}
+
+void s21_strcpy_test(const char *src, const char *expected)
+{
+    char dest[256];
+    s21_strcpy(dest, src);
+    printf("INPUT (SRC): \"%s\"\n", src);
+    printf("EXPECTED: \"%s\", GOT: \"%s\"\n", expected, dest);
+    if (s21_strcmp(dest, expected) == 0)
+        printf("SUCCESS\n\n");
+    else
+        printf("FAIL\n\n");
+}
+
+void s21_strcat_test(const char *initial, const char *src, const char *expected)
+{
+    char dest[256];
+    s21_strcpy(dest, initial);
+    s21_strcat(dest, src);
+    printf("INPUT: initial=\"%s\", append=\"%s\"\n", initial, src);
+    printf("EXPECTED: \"%s\", GOT: \"%s\"\n", expected, dest);
+    if (s21_strcmp(dest, expected) == 0)
+        printf("SUCCESS\n\n");
+    else
+        printf("FAIL\n\n");
+}
+
+void s21_strchr_test(const char *str, int ch, int expected_offset, int is_null)
+{
+    char *result = s21_strchr(str, ch);
+    printf("INPUT: str=\"%s\", char='%c' (%d)\n", str, ch ? ch : '0', ch);
+    if (is_null)
+    {
+        printf("EXPECTED: NULL, GOT: %s\n", result == NULL ? "NULL" : "NOT NULL");
+        if (result == NULL)
+            printf("SUCCESS\n\n");
+        else
+            printf("FAIL\n\n");
+    }
+    else
+    {
+        int actual_offset = (int)(result - str);
+        printf("EXPECTED OFFSET: %d, GOT OFFSET: %d\n", expected_offset, actual_offset);
+        if (actual_offset == expected_offset)
+            printf("SUCCESS\n\n");
+        else
+            printf("FAIL\n\n");
+    }
+}
+
+void s21_strstr_test(const char *haystack, const char *needle, int expected_offset, int is_null)
+{
+    char *result = s21_strstr(haystack, needle);
+    printf("INPUT: haystack=\"%s\", needle=\"%s\"\n", haystack, needle);
+    if (is_null)
+    {
+        printf("EXPECTED: NULL, GOT: %s\n", result == NULL ? "NULL" : "NOT NULL");
+        if (result == NULL)
+            printf("SUCCESS\n\n");
+        else
+            printf("FAIL\n\n");
+    }
+    else
+    {
+        int actual_offset = (int)(result - haystack);
+        printf("EXPECTED OFFSET: %d, GOT OFFSET: %d\n", expected_offset, actual_offset);
+        if (actual_offset == expected_offset)
+            printf("SUCCESS\n\n");
+        else
+            printf("FAIL\n\n");
+    }
+}
