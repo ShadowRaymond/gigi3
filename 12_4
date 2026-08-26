@@ -1,0 +1,48 @@
+CC = gcc
+CFLAGS = -Wall -Werror -Wextra
+BUILD_DIR = ../../build
+
+TARGET_6 = $(BUILD_DIR)/Quest_6
+TARGET_7 = $(BUILD_DIR)/Quest_7
+TARGET_8 = $(BUILD_DIR)/Quest_8
+TARGET_9 = $(BUILD_DIR)/Quest_9
+TARGET_10 = $(BUILD_DIR)/Quest_10
+TARGET_11 = $(BUILD_DIR)/Quest_11
+TARGET_12 = $(BUILD_DIR)/Quest_12
+
+all: strlen_tests strcmp_tests strcpy strcat strchr strstr full_coverage_tests
+
+strlen_tests:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DSTRLEN_MODE s21_string.c s21_string_test.c -o $(TARGET_6)
+
+strcmp_tests:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DSTRCMP_MODE s21_string.c s21_string_test.c -o $(TARGET_7)
+
+strcpy:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DBUILD_STRCPY s21_string.c -o $(TARGET_8)
+
+strcat:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DBUILD_STRCAT s21_string.c -o $(TARGET_9)
+
+strchr:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DBUILD_STRCHR s21_string.c -o $(TARGET_10)
+
+strstr:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DBUILD_STRSTR s21_string.c -o $(TARGET_11)
+
+full_coverage_tests:
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) -DFULL_COVERAGE s21_string.c s21_string_test.c -o $(TARGET_12)
+
+clean:
+	rm -f *.o $(TARGET_6) $(TARGET_7) $(TARGET_8) $(TARGET_9) $(TARGET_10) $(TARGET_11) $(TARGET_12)
+
+rebuild: clean all
+
+.PHONY: all strlen_tests strcmp_tests strcpy strcat strchr strstr full_coverage_tests clean rebuild
