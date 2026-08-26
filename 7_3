@@ -1,0 +1,57 @@
+#include "s21_string.h"
+#include <stdio.h>
+
+void s21_strlen_test(const char *test_input, size_t expected_output);
+void s21_strcmp_test(const char *str1, const char *str2, int expected_sign);
+
+int main()
+{
+#ifdef STRLEN_MODE
+    s21_strlen_test("Hello", 5);
+    s21_strlen_test("", 0);
+    s21_strlen_test("School 21\n!", 11);
+#endif
+
+#ifdef STRCMP_MODE
+    s21_strcmp_test("Hello", "Hello", 0);
+    s21_strcmp_test("Apple", "Banana", -1);
+    s21_strcmp_test("Banana", "Apple", 1);
+    s21_strcmp_test("", "Not Empty", -1);
+#endif
+
+    return 0;
+}
+
+void s21_strlen_test(const char *test_input, size_t expected_output)
+{
+    size_t result = s21_strlen(test_input);
+    printf("INPUT: \"%s\"\n", test_input);
+    printf("EXPECTED: %zu, GOT: %zu\n", expected_output, result);
+    if (result == expected_output)
+    {
+        printf("SUCCESS\n\n");
+    }
+    else
+    {
+        printf("FAIL\n\n");
+    }
+}
+
+void s21_strcmp_test(const char *str1, const char *str2, int expected_sign)
+{
+    int result = s21_strcmp(str1, str2);
+    int actual_sign = (result > 0) - (result < 0);
+    int expected_sign_normalized = (expected_sign > 0) - (expected_sign < 0);
+
+    printf("INPUT: \"%s\" vs \"%s\"\n", str1, str2);
+    printf("EXPECTED SIGN: %d, GOT SIGN: %d (RAW: %d)\n", expected_sign_normalized, actual_sign, result);
+
+    if (actual_sign == expected_sign_normalized)
+    {
+        printf("SUCCESS\n\n");
+    }
+    else
+    {
+        printf("FAIL\n\n");
+    }
+}
